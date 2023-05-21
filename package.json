@@ -1,0 +1,26 @@
+{
+  "name": "embedding-firehose",
+  "version": "1.0.0",
+  "description": "a websocket server that listens to the bluesky firehose, and emits events containing embeddings for the posts it sees.",
+  "main": "src/index.ts",
+  "repository": "https://github.com/drewmcarthur/embedding-firehose",
+  "author": "drew mca (drewmca.dev)",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.4",
+    "@types/ws": "^8.5.4",
+    "atproto-lexicon-ts": "git+https://github.com/DrewMcArthur/atproto-lexicon-ts.git",
+    "feed-generator": "git+https://github.com/bluesky-social/feed-generator.git",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "natural": "^6.3.0",
+    "openai": "^3.2.1",
+    "ws": "^8.13.0"
+  }
+}
