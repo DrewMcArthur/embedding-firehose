@@ -16,6 +16,7 @@
     "@types/ws": "^8.5.4",
     "atproto-lexicon-ts": "git+https://github.com/DrewMcArthur/atproto-lexicon-ts.git",
     "feed-generator": "git+https://github.com/bluesky-social/feed-generator.git",
+    "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
   },
   "dependencies": {

@@ -24,12 +24,9 @@ export default class CountingWebsocketServer {
         });
     }
 
-    public async broadcastEvent(event: Promise<string>) {
-        this.server.clients.forEach(async (client: WebSocket) => {
-            if (client.readyState === WebSocket.OPEN) {
-                client.send(await event);
-            }
-        });
+    public async broadcastEventAsync(event: Promise<string>) {
+        console.debug('broadcastEventAsync', event);
+        this.server.emit(await event)
     }
 
 }

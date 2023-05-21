@@ -29,7 +29,7 @@ export default class EmbeddedFirehoseServer extends FirehoseSubscriptionBase {
             })
         )
             .map(async (e: Promise<EmbeddedPost>) => JSON.stringify(await e))
-            .forEach(this.server.broadcastEvent)
+            .forEach(this.server.broadcastEventAsync)
     }
 
     private async embed(text: string): Promise<number[]> {
