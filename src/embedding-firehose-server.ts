@@ -1,10 +1,10 @@
-import { OutputSchema as RepoEvent, isCommit } from "feed-generator/src/lexicon/types/com/atproto/sync/subscribeRepos";
-import { FirehoseSubscriptionBase, getOpsByType } from "feed-generator/src/util/subscription"
+import { OutputSchema as RepoEvent, isCommit } from "./lexicon/types/com/atproto/sync/subscribeRepos"
+import { FirehoseSubscriptionBase, getOpsByType } from "./firehose-subscription-base"
 
 import CountingWebsocketServer from "./counting-ws-server"
-import Embedder from "./embedder";
-import Config from './config';
-import { createDb } from './db';
+import Embedder from "./embedder"
+import Config from './config'
+import { createDb } from './db'
 
 export default class EmbeddedFirehoseServer extends FirehoseSubscriptionBase {
     server: CountingWebsocketServer

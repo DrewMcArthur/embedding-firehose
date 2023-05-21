@@ -13,13 +13,21 @@
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.4",
+    "@types/express": "^4.17.17",
+    "@types/node": "^20.2.3",
     "@types/ws": "^8.5.4",
-    "atproto-lexicon-ts": "git+https://github.com/DrewMcArthur/atproto-lexicon-ts.git",
-    "feed-generator": "git+https://github.com/bluesky-social/feed-generator.git",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
   },
   "dependencies": {
+    "@atproto/api": "^0.3.7",
+    "@atproto/did-resolver": "^0.1.0",
+    "@atproto/lexicon": "^0.1.0",
+    "@atproto/repo": "^0.1.0",
+    "@atproto/uri": "^0.0.2",
+    "@atproto/xrpc-server": "^0.2.0",
+    "dotenv": "^16.0.3",
+    "kysely": "^0.24.2",
     "natural": "^6.3.0",
     "openai": "^3.2.1",
     "ws": "^8.13.0"
