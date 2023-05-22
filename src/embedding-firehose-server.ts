@@ -20,8 +20,26 @@ export default class EmbeddedFirehoseServer extends FirehoseSubscriptionBase {
   constructor(config: Config) {
     super(undefined, config.bskyFeedUri)
 
-    this.server = new CountingWebsocketServer(config)
     this.embedder = new Embedder(config)
+    this.server = new CountingWebsocketServer(config)
+  }
+
+  private async embed(text: string): Promise<number[]> {
+    return await this.embedder.embed(text)
+  }
+
+  private async embedPost(post: CreateOp<PostRecord>): Promise<EmbeddedPost> {
+    const embedding = await this.embed(post.record.text)
+    return {
+      uri: post.uri,
+      embedding,
+    }
+  }
+
+  private async serializeEmbeddedPost(
+    post: Promise<EmbeddedPost>,
+  ): Promise<string> {
+    return JSON.stringify(await post)
   }
 
   async handleEvent(event: RepoEvent): Promise<void> {
@@ -30,26 +48,9 @@ export default class EmbeddedFirehoseServer extends FirehoseSubscriptionBase {
 
     const ops = await getOpsByType(event)
     ops.posts.creates
-      .map(this.embedPost)
-      .map(this.serializeEmbeddedPost)
-      .forEach(this.server.broadcastEventAsync)
-  }
-
-  private async embedPost(post: CreateOp<PostRecord>): Promise<EmbeddedPost> {
-    return {
-      uri: post.uri,
-      embedding: await this.embed(post.record.text),
-    }
-  }
-
-  private async embed(text: string): Promise<number[]> {
-    return await this.embedder.embed(text)
-  }
-
-  private async serializeEmbeddedPost(
-    post: Promise<EmbeddedPost>,
-  ): Promise<string> {
-    return JSON.stringify(await post)
+      .map(p => this.embedPost(p))
+      .map(p => this.serializeEmbeddedPost(p))
+      .forEach(p => this.server.broadcastEventAsync(p))
   }
 }
 

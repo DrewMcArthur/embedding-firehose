@@ -8,7 +8,7 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "start": "yarn build && ts-node src/index.ts",
     "build": "tsc",
     "fmt": "prettier --write ."
   },

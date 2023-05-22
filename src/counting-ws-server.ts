@@ -3,7 +3,7 @@ import Config from './config'
 
 export default class CountingWebsocketServer {
   protected server: WebSocket.Server
-  public clientCount: number
+  protected clientCount: number
 
   constructor(config: Config) {
     this.clientCount = 0
