@@ -1,4 +1,4 @@
-/// copied from [`bluesky-social/feed-generator/src/util/subscription.ts`](https://github.com/bluesky-social/feed-generator/blob/master/src/util/subscription.ts)
+/// copied and modified from [`bluesky-social/feed-generator/src/util/subscription.ts`](https://github.com/bluesky-social/feed-generator/blob/master/src/util/subscription.ts)
 
 import { Subscription } from '@atproto/xrpc-server'
 import { cborToLexRecord, readCar } from '@atproto/repo'
@@ -18,7 +18,7 @@ import { Database } from './db'
 export abstract class FirehoseSubscriptionBase {
     public sub: Subscription<RepoEvent>
 
-    constructor(public db: Database, public service: string) {
+    constructor(public db: Optional<Database>, public service: string) {
         this.sub = new Subscription({
             service: service,
             method: ids.ComAtprotoSyncSubscribeRepos,
@@ -46,13 +46,14 @@ export abstract class FirehoseSubscriptionBase {
                 console.error('repo subscription could not handle message', err)
             }
             // update stored cursor every 20 events or so
-            if (isCommit(evt) && evt.seq % 20 === 0) {
+            if (this.db && isCommit(evt) && evt.seq % 20 === 0) {
                 await this.updateCursor(evt.seq)
             }
         }
     }
 
     async updateCursor(cursor: number) {
+        if (!this.db) return
         await this.db
             .updateTable('sub_state')
             .set({ cursor })
@@ -61,6 +62,7 @@ export abstract class FirehoseSubscriptionBase {
     }
 
     async getCursor(): Promise<{ cursor?: number }> {
+        if (!this.db) return {}
         const res = await this.db
             .selectFrom('sub_state')
             .selectAll()
@@ -185,3 +187,5 @@ const fixBlobRefs = (obj: unknown): unknown => {
     }
     return obj
 }
+
+export type Optional<T> = T | undefined

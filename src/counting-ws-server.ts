@@ -29,4 +29,7 @@ export default class CountingWebsocketServer {
         this.server.emit(await event)
     }
 
+    public numClients(): number {
+        return this.clientCount
+    }
 }

@@ -9,13 +9,17 @@
   "private": false,
   "scripts": {
     "start": "ts-node src/index.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "lint": "eslint . --ext .ts"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.4",
     "@types/express": "^4.17.17",
     "@types/node": "^20.2.3",
     "@types/ws": "^8.5.4",
+    "@typescript-eslint/eslint-plugin": "^5.59.6",
+    "@typescript-eslint/parser": "^5.59.6",
+    "eslint": "^8.41.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
   },
