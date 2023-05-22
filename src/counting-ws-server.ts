@@ -3,13 +3,14 @@ import Config from './config'
 
 export default class CountingWebsocketServer {
   protected server: WebSocket.Server
-  protected clientCount: number
+  public clientCount: number
 
   constructor(config: Config) {
-    this.server = new WebSocket.Server({ port: config.port })
     this.clientCount = 0
-
-    this.initialize()
+    this.server = new WebSocket.Server({ port: config.port }, () => {
+      this.initialize()
+      console.log(`listening on port ${config.port}`)
+    })
   }
 
   private initialize() {
@@ -25,7 +26,7 @@ export default class CountingWebsocketServer {
   }
 
   public async broadcastEventAsync(event: Promise<string>) {
-    console.debug('broadcastEventAsync', event)
+    console.debug('broadcastEventAsync', await event)
     this.server.emit(await event)
   }
 
