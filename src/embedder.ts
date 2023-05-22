@@ -28,6 +28,7 @@ export default class Embedder {
       input: processed,
     })
 
+    // TODO: extract cost from response & either log or save in db
     const embedding: number[] = response.data.data[0].embedding
     return embedding
   }
@@ -44,6 +45,6 @@ export default class Embedder {
       throw new Error(`Tokenizer failed on string: ${s}`)
     }
 
-    return tokens.filter((t) => !/^[@#]|^(rt|fv)$/i.test(t))
+    return tokens.filter(t => !/^[@#]|^(rt|fv)$/i.test(t))
   }
 }

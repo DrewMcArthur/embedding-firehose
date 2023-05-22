@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 export default class Config {
   public port: number
   public bskyFeedUri: string
+  public sampleRate: number | undefined
 
   public openaiApiKey: string
   public openaiOrgId: string
@@ -11,6 +12,7 @@ export default class Config {
     dotenv.config()
 
     this.port = maybeInt(process.env.PORT) || 3001
+    this.sampleRate = maybeFloat(process.env.SAMPLE_RATE)
 
     this.bskyFeedUri = check('BSKY_FEED_SERVICE')
     this.openaiApiKey = check('OPENAI_API_KEY')
@@ -28,4 +30,8 @@ function check(k: string): string {
 
 function maybeInt(s: string | undefined): number | undefined {
   return s ? parseInt(s, 10) : undefined
+}
+
+function maybeFloat(s: string | undefined): number | undefined {
+  return s ? parseFloat(s) : undefined
 }
