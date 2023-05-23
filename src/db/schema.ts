@@ -1,29 +1,13 @@
 export type DatabaseSchema = {
-  post: Post
-  sub_state: SubState
-  like: Like
+  api_call: ApiCall
 }
 
-export type Post = {
-  uri: string
-  cid: string
-  text: string
-  embedding: string // JSON {embeddings: number[]}
-  replyParent: string | null
-  replyRoot: string | null
-  indexedAt: string
-  score: number
-}
-
-export type SubState = {
-  service: string
-  cursor: number
-}
-
-export type Like = {
-  author: string
+export type ApiCall = {
+  datetime: number // of ms since 1970
+  estimatedTokens: number
+  numTokensUsed: number
+  cost: number // decimal to 1/1_000_000 precision? or just divide by a milli?
   postUri: string
   postCid: string
-  indexedAt: string
-  trainedOn: boolean
+  embedding: string // JSON.stringify(number[1536])
 }

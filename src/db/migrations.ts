@@ -11,40 +11,16 @@ export const migrationProvider: MigrationProvider = {
 migrations['001'] = {
   async up(db: Kysely<unknown>) {
     await db.schema
-      .createTable('post')
-      .addColumn('uri', 'varchar', (col) => col.primaryKey())
-      .addColumn('cid', 'varchar', (col) => col.notNull())
-      .addColumn('text', 'varchar', (col) => col.notNull())
-      .addColumn('embedding', 'json', (col) => col.notNull())
-      .addColumn('replyParent', 'varchar')
-      .addColumn('replyRoot', 'varchar')
-      .addColumn('indexedAt', 'varchar', (col) => col.notNull())
-      .addColumn('score', 'real', (col) => col.notNull())
-      .execute()
-
-    await db.schema
-      .createTable('sub_state')
-      .addColumn('service', 'varchar', (col) => col.primaryKey())
-      .addColumn('cursor', 'integer', (col) => col.notNull())
-      .execute()
-
-    await db.schema
-      .createTable('like')
-      .addColumn('id', 'varchar', (col) => col.primaryKey())
-      .addColumn('postUri', 'varchar', (col) =>
-        col.notNull().references('post.uri').onDelete('no action'),
-      )
-      .addColumn('postCid', 'varchar', (col) =>
-        col.notNull().references('post.cid').onDelete('no action'),
-      )
-      .addColumn('author', 'varchar', (col) => col.notNull())
-      .addColumn('indexedAt', 'varchar', (col) => col.notNull())
-      .addColumn('trainedOn', 'boolean', (col) => col.defaultTo(false))
-      .execute()
+      .createTable('api_call')
+      .addColumn('id', 'bigserial', col => col.primaryKey().autoIncrement())
+      .addColumn('datetime', 'timestamp', col => col.notNull())
+      .addColumn('numTokens', 'integer', col => col.notNull())
+      .addColumn('cost', 'decimal(2, 20)', col => col.notNull())
+      .addColumn('postUri', 'varchar', col => col.notNull())
+      .addColumn('postCid', 'varchar', col => col.notNull())
+      .addColumn('embedding', 'json', col => col.notNull())
   },
   async down(db: Kysely<unknown>) {
-    await db.schema.dropTable('post').execute()
-    await db.schema.dropTable('sub_state').execute()
-    await db.schema.dropTable('like').execute()
+    await db.schema.dropTable('api_call').execute()
   },
 }

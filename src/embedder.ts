@@ -1,6 +1,7 @@
 import { WordTokenizer } from 'natural'
 import { Configuration, OpenAIApi } from 'openai'
 import Config from './config'
+import CostLimiter from './cost-limiter'
 
 // a class handling embedding post contents
 export default class Embedder {
@@ -21,25 +22,20 @@ export default class Embedder {
     )
   }
 
-  async embed(content: string): Promise<number[]> {
-    const processed = this.preprocess(content)
+  async embed(tokens: string[]): Promise<EmbedResponse> {
     const response = await this.openai.createEmbedding({
       model: 'text-embedding-ada-002',
-      input: processed,
+      input: tokens.join(' '),
     })
 
-    // TODO: extract cost from response & either log or save in db
-    const embedding: number[] = response.data.data[0].embedding
-    return embedding
+    return {
+      embedding: response.data.data[0].embedding,
+      numTokensUsed: response.data.usage.total_tokens,
+    }
   }
 
-  private preprocess(content: string): string {
-    content = content.replace(/https?:\/\/[^\s]+/g, '')
-    content = this.tokenize(content).join(' ')
-    return content.toLowerCase()
-  }
-
-  private tokenize(s: string): string[] {
+  tokenize(s: string): string[] {
+    s = s.replace(/https?:\/\/[^\s]+/g, '').toLowerCase()
     const tokens = this.tokenizer.tokenize(s)
     if (tokens === null) {
       throw new Error(`Tokenizer failed on string: ${s}`)
@@ -47,4 +43,9 @@ export default class Embedder {
 
     return tokens.filter(t => !/^[@#]|^(rt|fv)$/i.test(t))
   }
+}
+
+export type EmbedResponse = {
+  embedding: number[]
+  numTokensUsed: number
 }
