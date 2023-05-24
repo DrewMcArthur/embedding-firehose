@@ -11,6 +11,8 @@ export default class Config {
   public dbLocation: string
   public desiredBurnRatePerDay: number
 
+  public dryRun: boolean
+
   constructor() {
     dotenv.config()
 
@@ -24,6 +26,8 @@ export default class Config {
     this.dbLocation = check('DB_LOCATION', ':memory:')
     this.desiredBurnRatePerDay =
       maybeInt(process.env.DESIRED_BURN_RATE_PER_DAY) || 1
+
+    this.dryRun = check('DRY_RUN', 'false').toLowerCase() == 'true'
 
     console.log('env config loaded successfully!')
   }

@@ -1,5 +1,5 @@
 import Config from './config'
-import { Database, createDb } from './db'
+import { Database } from './db'
 import { ApiCall } from './db/schema'
 
 /// keeps track of the openai API usage over time, to stay below a certain $ burn rate
@@ -8,8 +8,8 @@ export default class CostLimiter {
   private desiredBurnRatePerDay: number
   private db: Database
 
-  constructor(config: Config) {
-    this.db = createDb(config.dbLocation)
+  constructor(config: Config, db: Database) {
+    this.db = db
     this.desiredBurnRatePerDay = config.desiredBurnRatePerDay
     this.timeOfLastApiCall = new Date()
   }

@@ -11,14 +11,14 @@ import { Record as FollowRecord } from './lexicon/types/app/bsky/graph/follow'
 import {
   Commit,
   OutputSchema as RepoEvent,
-  isCommit,
 } from './lexicon/types/com/atproto/sync/subscribeRepos'
-import { Database } from './db'
+import { Database, migrateToLatest } from './db'
 
 export abstract class FirehoseSubscriptionBase {
   public sub: Subscription<RepoEvent>
 
-  constructor(public db: Optional<Database>, public service: string) {
+  constructor(public db: Database, public service: string) {
+    this.db = db
     this.sub = new Subscription({
       service: service,
       method: ids.ComAtprotoSyncSubscribeRepos,
@@ -39,6 +39,7 @@ export abstract class FirehoseSubscriptionBase {
   abstract handleEvent(evt: RepoEvent): Promise<void>
 
   async run() {
+    await migrateToLatest(this.db)
     for await (const evt of this.sub) {
       try {
         await this.handleEvent(evt)

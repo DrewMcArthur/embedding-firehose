@@ -7,10 +7,12 @@ import CostLimiter from './cost-limiter'
 export default class Embedder {
   tokenizer: WordTokenizer
   openai: OpenAIApi
+  dryRun: boolean
 
   constructor(config: Config) {
     this.tokenizer = new WordTokenizer()
     this.openai = this._initOpenAI(config)
+    this.dryRun = config.dryRun
   }
 
   private _initOpenAI(config: Config): OpenAIApi {
@@ -23,6 +25,7 @@ export default class Embedder {
   }
 
   async embed(tokens: string[]): Promise<EmbedResponse> {
+    if (this.dryRun) return { embedding: [], numTokensUsed: 0 }
     const response = await this.openai.createEmbedding({
       model: 'text-embedding-ada-002',
       input: tokens.join(' '),

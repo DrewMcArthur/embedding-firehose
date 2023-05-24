@@ -13,6 +13,7 @@ import CountingWebsocketServer from './counting-ws-server'
 import Embedder from './embedder'
 import Config from './config'
 import CostLimiter from './cost-limiter'
+import { Database } from './db'
 
 export default class EmbeddedFirehoseServer extends FirehoseSubscriptionBase {
   server: CountingWebsocketServer
@@ -20,17 +21,13 @@ export default class EmbeddedFirehoseServer extends FirehoseSubscriptionBase {
   sampleRate: number | undefined
   costLimiter: CostLimiter
 
-  constructor(config: Config) {
-    super(undefined, config.bskyFeedUri)
+  constructor(db: Database, config: Config) {
+    super(db, config.bskyFeedUri)
 
     this.embedder = new Embedder(config)
-    this.costLimiter = new CostLimiter(config)
+    this.costLimiter = new CostLimiter(config, db)
     this.server = new CountingWebsocketServer(config)
     this.sampleRate = config.sampleRate
-  }
-
-  private randomSample(): boolean {
-    return this.sampleRate === undefined || Math.random() < this.sampleRate
   }
 
   private async embedPost(post: CreateOp<PostRecord>): Promise<EmbeddedPost> {
@@ -68,7 +65,6 @@ export default class EmbeddedFirehoseServer extends FirehoseSubscriptionBase {
 
     const ops = await getOpsByType(event)
     ops.posts.creates
-      .filter(p => this.randomSample())
       .map(p => this.embedPost(p))
       .map(p => this.serializeEmbeddedPost(p))
       .forEach(p => this.server.broadcastEventAsync(p))
