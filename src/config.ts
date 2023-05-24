@@ -12,6 +12,7 @@ export default class Config {
   public desiredBurnRatePerDay: number
 
   public dryRun: boolean
+  public minTokensToEmbed: number
 
   constructor() {
     dotenv.config()
@@ -28,6 +29,7 @@ export default class Config {
       maybeInt(process.env.DESIRED_BURN_RATE_PER_DAY) || 1
 
     this.dryRun = check('DRY_RUN', 'false').toLowerCase() == 'true'
+    this.minTokensToEmbed = maybeInt(process.env.MIN_TOKENS_TO_EMBED) || 1
 
     console.log('env config loaded successfully!')
   }
