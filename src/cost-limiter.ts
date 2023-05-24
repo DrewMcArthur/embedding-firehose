@@ -29,8 +29,9 @@ export default class CostLimiter {
   }
 
   public async recordEmbedding(res: EmbedResult) {
+    const now = new Date()
     const insertVal: ApiCall = {
-      datetime: res.requestTime.getTime(),
+      datetime: now.getTime(),
       estimatedTokens: res.estimatedTokens,
       numTokensUsed: res.numTokensUsed,
       cost: (20 * res.numTokensUsed) / 1_000_000,
@@ -43,7 +44,8 @@ export default class CostLimiter {
       .values([insertVal])
       .onConflict(oc => oc.doNothing())
       .execute()
-    this.timeOfLastApiCall = new Date()
+      .catch(e => console.error(`error recording api call: ${e}`))
+    this.timeOfLastApiCall = now
   }
 }
 
@@ -54,7 +56,6 @@ const SECONDS_PER_DAY = SECONDS_PER_HOUR * 24
 const MILLISECONDS_PER_DAY = SECONDS_PER_DAY * MILLISECONDS_PER_SECOND
 
 type EmbedResult = {
-  requestTime: Date
   estimatedTokens: number
   numTokensUsed: number
   postUri: string

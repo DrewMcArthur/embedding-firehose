@@ -39,7 +39,6 @@ export abstract class FirehoseSubscriptionBase {
   abstract handleEvent(evt: RepoEvent): Promise<void>
 
   async run() {
-    await migrateToLatest(this.db)
     for await (const evt of this.sub) {
       try {
         await this.handleEvent(evt)

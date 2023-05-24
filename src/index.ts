@@ -1,12 +1,13 @@
-import { createDb } from './db'
+import { createDb, migrateToLatest } from './db'
 import Config from './config'
 import EmbeddedFirehoseServer from './embedding-firehose-server'
 
-const run = () => {
+const run = async () => {
   const config = new Config()
-  const db = createDb(config.dbLocation)
+  let db = createDb(config.dbLocation)
   const server = new EmbeddedFirehoseServer(db, config)
-  server.run()
+  await migrateToLatest(db)
+  await server.run()
 }
 
 run()

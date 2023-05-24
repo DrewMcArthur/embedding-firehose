@@ -39,7 +39,6 @@ export default class EmbeddedFirehoseServer extends FirehoseSubscriptionBase {
     const { embedding, numTokensUsed } = await this.embedder.embed(tokens)
 
     await this.costLimiter.recordEmbedding({
-      requestTime: new Date(),
       estimatedTokens: tokens.length,
       numTokensUsed,
       postUri: post.uri,
