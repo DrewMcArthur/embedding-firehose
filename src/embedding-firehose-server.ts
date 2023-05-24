@@ -34,7 +34,7 @@ export default class EmbeddedFirehoseServer extends FirehoseSubscriptionBase {
     const tokens = this.embedder.tokenize(post.record.text)
 
     if (!this.costLimiter.shouldEmbed(tokens.length))
-      return { uri: post.uri, embedding: undefined }
+      return { uri: post.uri, embedding: null, numTokens: tokens.length }
 
     const { embedding, numTokensUsed } = await this.embedder.embed(tokens)
 
@@ -49,13 +49,8 @@ export default class EmbeddedFirehoseServer extends FirehoseSubscriptionBase {
     return {
       uri: post.uri,
       embedding,
+      numTokens: numTokensUsed,
     }
-  }
-
-  private async serializeEmbeddedPost(
-    post: Promise<EmbeddedPost>,
-  ): Promise<string> {
-    return JSON.stringify(await post)
   }
 
   async handleEvent(event: RepoEvent): Promise<void> {
@@ -65,12 +60,14 @@ export default class EmbeddedFirehoseServer extends FirehoseSubscriptionBase {
     const ops = await getOpsByType(event)
     ops.posts.creates
       .map(p => this.embedPost(p))
-      .map(p => this.serializeEmbeddedPost(p))
+      // filter out posts where embedding is undefined
+      .filter(async p => (await p).embedding !== null)
       .forEach(p => this.server.broadcastEventAsync(p))
   }
 }
 
-type EmbeddedPost = {
+export type EmbeddedPost = {
   uri: string
-  embedding: number[] | undefined
+  embedding: number[] | null
+  numTokens: number
 }

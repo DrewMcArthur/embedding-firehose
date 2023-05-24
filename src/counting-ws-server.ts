@@ -1,5 +1,6 @@
 import WebSocket from 'ws'
 import Config from './config'
+import { EmbeddedPost } from './embedding-firehose-server'
 
 export default class CountingWebsocketServer {
   protected server: WebSocket.Server
@@ -31,8 +32,9 @@ export default class CountingWebsocketServer {
     })
   }
 
-  public async broadcastEventAsync(event: Promise<string>) {
-    this.server.emit(await event)
+  public async broadcastEventAsync(event: Promise<EmbeddedPost>) {
+    const data = JSON.stringify(await event)
+    this.server.clients.forEach(client => client.send(data))
     this.eventCount++
   }
 

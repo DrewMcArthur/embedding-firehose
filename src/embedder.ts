@@ -25,7 +25,7 @@ export default class Embedder {
   }
 
   async embed(tokens: string[]): Promise<EmbedResponse> {
-    if (this.dryRun) return { embedding: [], numTokensUsed: 0 }
+    if (this.dryRun) return { embedding: [], numTokensUsed: tokens.length }
     const response = await this.openai.createEmbedding({
       model: 'text-embedding-ada-002',
       input: tokens.join(' '),
