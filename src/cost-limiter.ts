@@ -17,11 +17,14 @@ export default class CostLimiter {
   public shouldEmbed(numTokens: number): boolean {
     const timeSinceLastApiCall =
       new Date().getTime() - this.timeOfLastApiCall.getTime()
+    // console.debug(`checking if should embed, it's been ${timeSinceLastApiCall} ms`)
 
     const estimatedCost = (20 * numTokens) / 1_000_000 // openai.createEmbedding costs $20 per million tokens
+    // console.log(`estimatedCost: ${estimatedCost}`)
     const projectedBurnRatePerMs = estimatedCost / timeSinceLastApiCall // dollars per millisecond
     const projectedBurnRatePerDay =
       projectedBurnRatePerMs * MILLISECONDS_PER_DAY
+    // console.debug(`projectedBurnRate/Day: ${projectedBurnRatePerDay}, threshold: ${this.desiredBurnRatePerDay}`)
     return projectedBurnRatePerDay < this.desiredBurnRatePerDay
   }
 
