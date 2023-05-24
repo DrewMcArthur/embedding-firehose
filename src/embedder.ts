@@ -2,6 +2,7 @@ import { WordTokenizer } from 'natural'
 import { Configuration, OpenAIApi } from 'openai'
 import Config from './config'
 import CostLimiter from './cost-limiter'
+import { mock } from 'node:test'
 
 // a class handling embedding post contents
 export default class Embedder {
