@@ -5,8 +5,8 @@ import EmbeddedFirehoseServer from './embedding-firehose-server'
 const run = async () => {
   const config = new Config()
   let db = createDb(config.dbLocation)
-  const server = new EmbeddedFirehoseServer(db, config)
   await migrateToLatest(db)
+  const server = new EmbeddedFirehoseServer(db, config)
   await server.run()
 }
 

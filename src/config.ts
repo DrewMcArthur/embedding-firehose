@@ -17,7 +17,7 @@ export default class Config {
   constructor() {
     dotenv.config()
 
-    this.port = maybeInt(process.env.PORT) || 3001
+    this.port = maybeInt(process.env.PORT) || 80
     this.sampleRate = maybeFloat(process.env.SAMPLE_RATE) || 0.1
 
     this.bskyFeedUri = check('BSKY_FEED_SERVICE', 'wss://bsky.social')
