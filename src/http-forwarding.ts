@@ -10,7 +10,7 @@ export default class HttpForwardingServer {
   constructor(webSocketServer: WebSocket.Server, config: Config) {
     this.wss = webSocketServer
     this.startHttpServer()
-    this.startHttpsServer(config)
+    if (config.useHttps) this.startHttpsServer(config)
   }
 
   startHttpServer() {
@@ -27,6 +27,7 @@ export default class HttpForwardingServer {
   }
 
   startHttpsServer(config: Config) {
+    if (!config.ssl) throw Error('https enabled but missing ssl config')
     const port = 433
     const options = {
       key: fs.readFileSync(config.ssl.keyPath),

@@ -14,7 +14,8 @@ export default class Config {
   public dryRun: boolean
   public minTokensToEmbed: number
 
-  public ssl: SslConfig
+  public ssl: SslConfig | undefined
+  public useHttps: boolean
 
   constructor() {
     dotenv.config()
@@ -36,9 +37,12 @@ export default class Config {
       this.openaiOrgId = check('OPENAI_ORG_ID')
     }
 
-    this.ssl = {
-      keyPath: check('SSL_KEY_PATH', undefined),
-      certPath: check('SSL_CERT_PATH', undefined),
+    this.useHttps = check('USE_HTTPS', 'false').toLowerCase() !== 'false'
+    if (this.useHttps) {
+      this.ssl = {
+        keyPath: check('SSL_KEY_PATH'),
+        certPath: check('SSL_CERT_PATH'),
+      }
     }
 
     console.log('env config loaded successfully!')
