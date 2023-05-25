@@ -45,4 +45,8 @@ export default class CountingWebsocketServer {
   public numEvents(): number {
     return this.eventCount
   }
+
+  public getWss(): WebSocket.Server<WebSocket.WebSocket> {
+    return this.server
+  }
 }

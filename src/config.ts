@@ -14,10 +14,12 @@ export default class Config {
   public dryRun: boolean
   public minTokensToEmbed: number
 
+  public ssl: SslConfig
+
   constructor() {
     dotenv.config()
 
-    this.port = maybeInt(process.env.PORT) || 443
+    this.port = maybeInt(process.env.PORT) || 3000
     this.sampleRate = maybeFloat(process.env.SAMPLE_RATE) || 0.1
 
     this.bskyFeedUri = check('BSKY_FEED_SERVICE', 'wss://bsky.social')
@@ -32,6 +34,11 @@ export default class Config {
     if (!this.dryRun) {
       this.openaiApiKey = check('OPENAI_API_KEY')
       this.openaiOrgId = check('OPENAI_ORG_ID')
+    }
+
+    this.ssl = {
+      keyPath: check('SSL_KEY_PATH', undefined),
+      certPath: check('SSL_CERT_PATH', undefined),
     }
 
     console.log('env config loaded successfully!')
@@ -51,4 +58,9 @@ function maybeInt(s: string | undefined): number | undefined {
 
 function maybeFloat(s: string | undefined): number | undefined {
   return s ? parseFloat(s) : undefined
+}
+
+type SslConfig = {
+  keyPath: string
+  certPath: string
 }

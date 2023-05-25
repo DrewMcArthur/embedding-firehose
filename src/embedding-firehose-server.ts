@@ -14,12 +14,14 @@ import Embedder from './embedder'
 import Config from './config'
 import CostLimiter from './cost-limiter'
 import { Database } from './db'
+import HttpForwardingServer from './http-forwarding'
 
 export default class EmbeddedFirehoseServer extends FirehoseSubscriptionBase {
   server: CountingWebsocketServer
   embedder: Embedder
   sampleRate: number | undefined
   costLimiter: CostLimiter
+  httpForwarder: HttpForwardingServer
 
   constructor(db: Database, config: Config) {
     super(db, config.bskyFeedUri)
@@ -27,6 +29,7 @@ export default class EmbeddedFirehoseServer extends FirehoseSubscriptionBase {
     this.embedder = new Embedder(config)
     this.costLimiter = new CostLimiter(config, db)
     this.server = new CountingWebsocketServer(config)
+    this.httpForwarder = new HttpForwardingServer(this.server.getWss(), config)
     this.sampleRate = config.sampleRate
   }
 
