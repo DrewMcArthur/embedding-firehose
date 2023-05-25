@@ -9,12 +9,12 @@ export default class HttpForwardingServer {
   wss: WebSocket.Server<WebSocket.WebSocket>
   constructor(webSocketServer: WebSocket.Server, config: Config) {
     this.wss = webSocketServer
-    this.startHttpServer()
+    this.startHttpServer(config)
     if (config.useHttps) this.startHttpsServer(config)
   }
 
-  startHttpServer() {
-    const port = 80
+  startHttpServer(config: Config) {
+    const port = config.port
     const server = http.createServer()
 
     server.on('upgrade', (request, socket, head) => {
