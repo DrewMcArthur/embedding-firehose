@@ -10,9 +10,9 @@ export default class CountingWebsocketServer {
   constructor(config: Config) {
     this.clientCount = 0
     this.eventCount = 0
-    this.server = new WebSocket.Server({ port: config.wsPort }, () => {
+    this.server = new WebSocket.Server({ port: config.wssPort }, () => {
       this.initialize()
-      console.log(`listening on port ${config.wsPort}`)
+      console.log(`WSS listening on port ${config.wssPort}`)
     })
   }
 

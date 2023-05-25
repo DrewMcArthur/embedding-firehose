@@ -19,7 +19,6 @@ import HttpForwardingServer from './http-forwarding'
 export default class EmbeddedFirehoseServer extends FirehoseSubscriptionBase {
   server: CountingWebsocketServer
   embedder: Embedder
-  sampleRate: number | undefined
   costLimiter: CostLimiter
   httpForwarder: HttpForwardingServer
 
@@ -30,7 +29,7 @@ export default class EmbeddedFirehoseServer extends FirehoseSubscriptionBase {
     this.costLimiter = new CostLimiter(config, db)
     this.server = new CountingWebsocketServer(config)
     this.httpForwarder = new HttpForwardingServer(this.server.getWss(), config)
-    this.sampleRate = config.sampleRate
+    this.httpForwarder.start()
   }
 
   private async embedPost(post: CreateOp<PostRecord>): Promise<EmbeddedPost> {

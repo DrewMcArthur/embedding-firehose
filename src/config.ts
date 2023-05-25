@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 
 export default class Config {
-  public wsPort: number
+  public wssPort: number
   public port: number
   public bskyFeedUri: string
   public sampleRate: number | undefined
@@ -21,7 +21,7 @@ export default class Config {
   constructor() {
     dotenv.config()
 
-    this.wsPort = maybeInt(process.env.WSS_PORT) || 3000
+    this.wssPort = maybeInt(process.env.WSS_PORT) || 3000
     this.port = maybeInt(process.env.PORT) || 8080
     this.sampleRate = maybeFloat(process.env.SAMPLE_RATE) || 0.1
 
