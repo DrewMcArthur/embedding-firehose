@@ -21,7 +21,7 @@ export default class Config {
   constructor() {
     dotenv.config()
 
-    this.wsPort = maybeInt(process.env.PORT) || 3000
+    this.wsPort = maybeInt(process.env.WSS_PORT) || 3000
     this.port = maybeInt(process.env.PORT) || 8080
     this.sampleRate = maybeFloat(process.env.SAMPLE_RATE) || 0.1
 

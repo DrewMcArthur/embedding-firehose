@@ -28,7 +28,7 @@ export default class HttpForwardingServer {
 
   startHttpsServer(config: Config) {
     if (!config.ssl) throw Error('https enabled but missing ssl config')
-    const port = 433
+    const port = config.port
     const options = {
       key: fs.readFileSync(config.ssl.keyPath),
       cert: fs.readFileSync(config.ssl.certPath),
